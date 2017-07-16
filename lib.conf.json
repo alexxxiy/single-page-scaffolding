@@ -1,0 +1,9 @@
+{
+	"js": {
+		"jquery": "dist/jquery.min.js",
+		"velocity": "velocity.min.js"
+	},
+	"css": {
+		"bootstrap": "dist/css/bootstrap.min.css"
+	}
+}
