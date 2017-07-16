@@ -25,7 +25,7 @@ exports.getAllLibrariesFileNames = function(returnFilePath=false){
 exports.getLibrariesFileNamesByType = function(type, returnFilePath=false){
 	var libs = libConf[type];
 	var libFiles = [];
-	var file;
+	var file, files, path;
 
 	if(!libs){
 		console.log(`ERROR!!! No libraries with type "${type}"`);
@@ -33,27 +33,38 @@ exports.getLibrariesFileNamesByType = function(type, returnFilePath=false){
 	}
 
 	for(var name in libs){
-		var path = `./bower_components/${name}/${libs[name]}`;
-		try{
-			fs.accessSync(path);
-		}catch(err){
-			console.log(`ERROR!!! File does not exists ${path}`);
-			continue;
+		files = libs[name];
+		if(!Array.isArray(files)){
+			files = [files];
 		}
 
-		if(returnFilePath){
-			file = path;
-		}
-		else{
-			file = libs[name].match(/([^\/]+\.(js|css))$/ig)[0];
+		for(var i = 0; i < files.length; i++){
+			file = files[i];
+			path = `./bower_components/${name}/${file}`;
+			console.log('_________.file', file);
 
-			if(!file){
-				console.log(`ERROR!!! Can't parse filename from ${libs[name]}`);
+			try{
+				fs.accessSync(path);
+			}catch(err){
+				console.log(`ERROR!!! File does not exists ${path}`);
 				continue;
 			}
-		}
 
-		libFiles.push(file);
+			if(returnFilePath){
+				file = path;
+			}
+			else{
+				var re = new RegExp(`([^\\/]+\\.(${libTypes.join('|')}))$`, 'ig');
+				file = file.match(re)[0];
+
+				if(!file){
+					console.log(`ERROR!!! Can't parse filename from ${libs[name]}`);
+					continue;
+				}
+			}
+
+			libFiles.push(file);
+		}
 	}
 
 	return libFiles;
