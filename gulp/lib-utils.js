@@ -41,7 +41,6 @@ exports.getLibrariesFileNamesByType = function(type, returnFilePath=false){
 		for(var i = 0; i < files.length; i++){
 			file = files[i];
 			path = `./bower_components/${name}/${file}`;
-			console.log('_________.file', file);
 
 			try{
 				fs.accessSync(path);
