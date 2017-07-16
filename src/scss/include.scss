@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'qarmic'; /*a name to be used later*/
+    src: url('common/Qarmic_sans_Abridged.ttf'); /*URL to font*/
+}
+
+body{
+	background-color: #3aabd1;
+	font-family: qarmic;
+
+	h1{
+		text-align: center;
+	}
+}

@@ -1,0 +1,17 @@
+title myApp
+meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
+meta(name="description", content="")
+meta(name="keywords", content="")
+link(rel="icon", type="image/x-icon", href=`${common}/favicon.ico`)
+
+// add CSS libraries
+each lib in cssLibs
+	link(rel="stylesheet" href=`${lib}`)
+
+// add JS libraries
+each lib in jsLibs
+	script(type="text/javascript" src=`${lib}`)
+
+// add custom JS & CSS files
+link(rel="stylesheet" href=`${manifest.css}`)
+script(type="text/javascript" src=`${manifest.js}`)
