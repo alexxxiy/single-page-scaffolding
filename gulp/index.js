@@ -21,8 +21,10 @@ var webpackConf    = require('../webpack.config');
 const libUtils     = require('./lib-utils');
 
 
-gulp.task('lib', function(){
+gulp.task('lib', function(done){
 	var libs = libUtils.getAllLibrariesFileNames(true);
+
+	if(!libs || !libs.length) return done();
 
 	return gulp.src(libs)
 		.pipe(plumber())
