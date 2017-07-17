@@ -1,8 +1,8 @@
 {
 	"js": {
-
+		"react": ["react.min.js", "react-dom.min.js"]
 	},
 	"css": {
-
+		"bootstrap": "dist/css/bootstrap.min.css"
 	}
 }
