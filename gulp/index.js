@@ -8,7 +8,7 @@ const scss         = require('gulp-sass');
 // const reload       = browserSync.reload;
 const debug        = require('gulp-debug');
 // const gulpIf       = require('gulp-if');
-// const rename       = require('gulp-rename');
+const rename       = require('gulp-rename');
 // const PATH         = require('path');
 // const svgmin       = require('gulp-svgmin');
 // const uglify       = require('gulp-uglify');
@@ -33,7 +33,7 @@ gulp.task('lib', function(done){
 });
 
 gulp.task('pug', function(){
-	return gulp.src(['src/pug/index.pug'])
+	return gulp.src(['src/pug/entry.pug'])
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(pug({
@@ -44,11 +44,12 @@ gulp.task('pug', function(){
 		}))
 		.pipe(debug({title: 'pug'}))
 		.pipe(sourcemaps.write())
+		.pipe(rename('index.html'))
 		.pipe(gulp.dest('build'));
 });
 
 gulp.task('scss', function(){
-	return gulp.src(['src/scss/style.scss'])
+	return gulp.src(['src/scss/entry.scss'])
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(scss())
@@ -56,11 +57,12 @@ gulp.task('scss', function(){
 		.pipe(sourcemaps.write())
 		.pipe(autoprefixer({browsers: ['last 2 versions'],cascade: false}))
 		.pipe(cleanCSS({compatibility: 'ie8'}))
+		.pipe(rename('style.css'))
 		.pipe(gulp.dest('build'))
 });
 
 gulp.task('js', function(){
-	return gulp.src(['src/js/script.js'])
+	return gulp.src(['src/js/entry.js'])
 		.pipe(webpack(webpackConf))
 		.pipe(gulp.dest('.'));
 });
