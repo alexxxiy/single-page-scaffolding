@@ -1,27 +1,6 @@
 doctype html
 html(lang='en')
 	head
-		title myApp
-		meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
-		meta(name="description", content="")
-		meta(name="keywords", content="")
-		link(rel="icon", type="image/x-icon", href="favicon.ico")
-
-		// add CSS libraries
-		each lib in cssLibs
-			- var link = `<link rel="stylesheet" href="${lib}">`
-			| !{link}
-
-		link(rel='stylesheet', href='style.css')
-
-		// add JS libraries
-		each lib in jsLibs
-			- var script = `<script type="text/javascript" src="${lib}"></script>`
-			| !{script}
-
-		script(type='text/javascript', src='script.js').
+		include head
 	body
-		div.container
-			h1 Awesome page!!!
-			code select
-		div#app
+		include body

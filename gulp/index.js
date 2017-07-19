@@ -7,11 +7,12 @@ const scss         = require('gulp-sass');
 // const browserSync  = require('browser-sync').create();
 // const reload       = browserSync.reload;
 const debug        = require('gulp-debug');
-// const gulpIf       = require('gulp-if');
+const gulpIf       = require('gulp-if');
 const rename       = require('gulp-rename');
 // const PATH         = require('path');
 // const svgmin       = require('gulp-svgmin');
 // const uglify       = require('gulp-uglify');
+const hash         = require('hash-files');
 const cleanCSS     = require('gulp-clean-css');
 const autoprefixer = require('gulp-autoprefixer');
 const webpack      = require('gulp-webpack');
@@ -35,7 +36,6 @@ gulp.task('lib', function(done){
 gulp.task('pug', function(){
 	return gulp.src(['src/pug/entry.pug'])
 		.pipe(plumber())
-		.pipe(sourcemaps.init())
 		.pipe(pug({
 			locals: {
 				jsLibs: libUtils.getLibrariesFileNamesByType('js'),
@@ -43,7 +43,6 @@ gulp.task('pug', function(){
 			}
 		}))
 		.pipe(debug({title: 'pug'}))
-		.pipe(sourcemaps.write())
 		.pipe(rename('index.html'))
 		.pipe(gulp.dest('build'));
 });
@@ -61,10 +60,32 @@ gulp.task('scss', function(){
 		.pipe(gulp.dest('build'))
 });
 
+var manifest = {
+	js: '',
+	css: ''
+};
+
 gulp.task('js', function(){
+	var sha = hash.sync({files: ['src/js/entry.js']}).slice(0,10);
+
 	return gulp.src(['src/js/entry.js'])
 		.pipe(webpack(webpackConf))
-		.pipe(gulp.dest('.'));
+		// .on('data', (file)=>{
+		// 	let fileName = file.path.match(/[^\/\\]+$/i)[0];
+		// 	if(fileName !== 'script.js') return;
+		// 	sha = hash.sync({files: [file.path]}).slice(0,10);
+		// 	console.log(fileName, sha);
+		// })
+		.pipe(rename((path)=>{
+			path.basename = path.basename.replace('script', 'script.' + sha);
+
+			if(path.extname === '.js'){
+				manifest.js = path.basename + path.extname;
+			}
+
+		}))
+		.pipe(debug({title: 'JS'}))
+		.pipe(gulp.dest('.'))
 });
 
 gulp.task('images', function(){
