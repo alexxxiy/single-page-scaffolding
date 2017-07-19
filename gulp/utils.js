@@ -1,4 +1,6 @@
 const fs           = require('fs');
+const colors       = require('colors');
+const log          = require('./logger')(module);
 var libConf        = require('../lib.conf.json');
 var libTypes       = Object.keys(libConf);
 
@@ -67,4 +69,31 @@ exports.getLibrariesFileNamesByType = function(type, returnFilePath=false){
 	}
 
 	return libFiles;
+};
+
+exports.getCustomFile = function(type){
+	var reMap = {
+		js: '^script\\.\\S+\\.js$',
+		css: '^style\\.\\S+\\.css$'
+	};
+
+	var re = new RegExp(reMap[type], 'ig');
+
+	var files, file, match;
+
+	try{
+		files = fs.readdirSync('build');
+	}catch(err){
+		log.e(`There no build directory.`);
+		return null;
+	}
+
+	for(var i in files){
+		file = files[i];
+		match = file.match(re);
+		if(match) return match[0]
+	}
+
+	log.e(`There no custom ${type} file in the build directory`)
+	return null;
 };

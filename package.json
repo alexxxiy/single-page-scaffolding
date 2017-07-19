@@ -9,6 +9,8 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"colors": "^1.1.2",
+		"del": "^3.0.0",
 		"gulp": "github:gulpjs/gulp#4.0",
 		"gulp-autoprefixer": "^4.0.0",
 		"gulp-clean-css": "^3.7.0",

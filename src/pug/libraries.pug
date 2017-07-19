@@ -1,9 +1,0 @@
-// add CSS libraries
-each lib in cssLibs
-	- var link = `<link rel="stylesheet" href="${lib}">`
-	| !{link}
-
-// add JS libraries
-each lib in jsLibs
-	- var script = `<script type="text/javascript" src="${lib}"></script>`
-	| !{script}

@@ -4,7 +4,16 @@ meta(name="description", content="")
 meta(name="keywords", content="")
 link(rel="icon", type="image/x-icon", href="favicon.ico")
 
-include libraries
+// add CSS libraries
+each lib in cssLibs
+	- var link = `<link rel="stylesheet" href="${lib}">`
+	| !{link}
 
-link(rel='stylesheet', href='style.css')
-script(type='text/javascript', src='script.js')
+// add JS libraries
+each lib in jsLibs
+	- var script = `<script type="text/javascript" src="${lib}"></script>`
+	| !{script}
+
+// add custom JS & CSS files
+|<link rel="stylesheet" href="#{manifest.css}">
+|<script type="text/javascript" src="#{manifest.js}"></script>
