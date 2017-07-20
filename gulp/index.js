@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 const gulp         = require('gulp');
 const sourcemaps   = require('gulp-sourcemaps');
 const plumber      = require('gulp-plumber');
@@ -89,7 +89,7 @@ gulp.task('clean:css', ()=>{
 	return del(['build/style.*.css']);
 });
 
-gulp.task('css', gulp.series('clean:css', 'build:css'));
+gulp.task('css', gulp.series('clean:css', 'build:css', 'pug'));
 
 // JS
 gulp.task('build:js', function(){
@@ -118,7 +118,7 @@ gulp.task('clean:js', ()=>{
 	return del(['build/script.*.js', 'build/script.*.js.map']);
 });
 
-gulp.task('js', gulp.series('clean:js', 'build:js'));
+gulp.task('js', gulp.series('clean:js', 'build:js', 'pug'));
 
 // Clean
 gulp.task('clean', ()=>{
