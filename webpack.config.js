@@ -10,5 +10,17 @@ module.exports = {
 		filename: './build/script.js'
 	},
 
-	devtool: 'cheap-source-map'
+	devtool: 'cheap-source-map',
+    module: {
+	    loaders: [
+		    {
+				test: /\.jsx?$/,
+				exclude: [/node_modules/],
+				loader: "babel-loader",
+				query: {
+					presets: ['es2015', 'react']
+				}
+			}
+		]
+	}
 };
