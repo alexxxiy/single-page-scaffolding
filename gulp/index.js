@@ -21,14 +21,24 @@ const del          = require('del');
 const fs           = require('fs');
 const colors       = require('colors');
 
-var webpackConf    = require('../webpack.config');
 const utils     = require('./utils');
 
 
+
+// Some variables
+const buildDirectory = 'build';
+const commonDirectory = 'common';
+
+
+//------------------------------
+const _build = buildDirectory;
+const _common = `${buildDirectory}/${commonDirectory}`;
+const webpackConf    = require('../webpack.config')(buildDirectory);
 var manifest = {
 	js: '',
 	css: ''
 };
+//------------------------------
 
 // Copy libraries
 gulp.task('lib', function(done){
@@ -39,7 +49,7 @@ gulp.task('lib', function(done){
 	return gulp.src(libs)
 		.pipe(plumber())
 		.pipe(debug({title: 'lib'}))
-		.pipe(gulp.dest('build'))
+		.pipe(gulp.dest(_common));
 });
 
 // HTML (Pug)
@@ -54,15 +64,17 @@ gulp.task('pug', function(done){
 	return gulp.src(['src/pug/entry.pug'])
 		.pipe(plumber())
 		.pipe(pug({
+			pretty: true,
 			locals: {
 				jsLibs: utils.getLibrariesFileNamesByType('js'),
 				cssLibs: utils.getLibrariesFileNamesByType('css'),
-				manifest: manifest
+				manifest: manifest,
+				common: commonDirectory
 			}
 		}))
 		.pipe(debug({title: 'pug'}))
 		.pipe(rename('index.html'))
-		.pipe(gulp.dest('build'));
+		.pipe(gulp.dest(_build));
 });
 
 // CSS (SCSS)
@@ -82,11 +94,11 @@ gulp.task('build:css', function(){
 			manifest.css = path.basename + path.extname;
 		}))
 		.pipe(sourcemaps.write())
-		.pipe(gulp.dest('build'))
+		.pipe(gulp.dest(_build));
 });
 
 gulp.task('clean:css', ()=>{
-	return del(['build/style.*.css']);
+	return del([`${_build}/style.*.css`]);
 });
 
 gulp.task('css', gulp.series('clean:css', 'build:css', 'pug'));
@@ -106,23 +118,29 @@ gulp.task('build:js', function(){
 
 		}))
 		.pipe(debug({title: 'JS'}))
-		.pipe(gulp.dest('.'))
+		.pipe(gulp.dest('.'));
 });
 
 gulp.task('images', function(){
 	return gulp.src(['src/images/*.*'])
-		.pipe(gulp.dest('build'))
+		.pipe(gulp.dest(_build));
 });
 
 gulp.task('clean:js', ()=>{
-	return del(['build/script.*.js', 'build/script.*.js.map']);
+	return del([`${_build}/script.*.js`, `${_build}/script.*.js.map`]);
 });
 
 gulp.task('js', gulp.series('clean:js', 'build:js', 'pug'));
 
+// Different common files
+gulp.task('common', ()=>{
+	return gulp.src(['src/common/**/*.*'])
+		.pipe(gulp.dest(_common));
+});
+
 // Clean
 gulp.task('clean', ()=>{
-	return del(['build/**/*']);
+	return del([`${_build}/**/*`]);
 });
 
 // Watch
@@ -130,10 +148,11 @@ gulp.task('watch', function(){
 	gulp.watch(['src/pug/**/*.pug'], gulp.series('pug'));
 	gulp.watch(['src/scss/**/*.scss'], gulp.series('css'));
 	gulp.watch(['src/js/**/*.js'], gulp.series(['js']));
+	gulp.watch(['src/common/**/*.*'], gulp.series(['common']));
 	gulp.watch(['lib.conf.json'], gulp.series(utils.resetCache, 'pug', 'lib'));
 });
 
 // Default
-gulp.task('default', gulp.series('clean', 'css', 'js', 'images', 'lib', 'pug', 'watch'));
+gulp.task('default', gulp.series('clean', 'css', 'js', 'images', 'lib', 'common','pug', 'watch'));
 
 

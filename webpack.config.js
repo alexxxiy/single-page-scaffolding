@@ -3,7 +3,7 @@
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpack = require('webpack');
 
-module.exports = {
+let config = {
 	entry: "./src/js/entry",
 
 	output: {
@@ -24,3 +24,9 @@ module.exports = {
 		]
 	}
 };
+
+module.exports = (buildDirectory) => {
+	config.output.filename = `./${buildDirectory}/script.js`;
+
+	return config;
+}

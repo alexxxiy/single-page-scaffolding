@@ -13,6 +13,7 @@ module.exports = function(){
 	// 	document.getElementById('app')
 	// );
 };
+
 // Create new Reaact component
 var Excel = React.createClass({
 	name: 'Excel',
@@ -22,13 +23,24 @@ var Excel = React.createClass({
 	render: function(){
 		return (
 			<table className="excel">
-				<th>
-					{
-						this.props.header.map((title, idx) => {
-							return <td key={idx}>{title}</td>;
-						})
-					}
-				</th>
+				<thead>
+					<tr>
+						{
+							this.props.header.map((title, idx) => {
+								return <th key={idx}>{title}</th>;
+							})
+						}
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
 			</table>
 		)
 	}
