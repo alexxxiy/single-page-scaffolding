@@ -2,8 +2,19 @@ module.exports = function(){
 
 	// Show our awesome React component
 	var header = ['one', 'two', 'free', 'four', 'five'];
+	var data = [
+		['one1', 'two1', 'free1', 'four1', 'five1'],
+		['one2', 'two2', 'free2', 'four2', 'five2'],
+		['one3', 'two3', 'free3', 'four3', 'five3'],
+		['one4', 'two4', 'free4', 'four4', 'five4'],
+		['one5', 'two5', 'free5', 'four5', 'five5'],
+		['one6', 'two6', 'free6', 'four6', 'five6'],
+		['one7', 'two7', 'free7', 'four7', 'five7'],
+		['one8', 'two8', 'free8', 'four8', 'five8']
+	];
+
 	ReactDOM.render(
-		React.createElement(Excel, {header: header}),
+		React.createElement(Excel, {initialHeader: header, initialData: data}),
 		document.getElementById('app')
 	);
 
@@ -18,7 +29,17 @@ module.exports = function(){
 var Excel = React.createClass({
 	name: 'Excel',
 	propTypes: {
-		header: React.PropTypes.arrayOf(React.PropTypes.string)
+		initialHeader: React.PropTypes.arrayOf(React.PropTypes.string),
+		initialData: React.PropTypes.arrayOf(React.PropTypes.any)
+	},
+	getInitialState: function(){
+		return {
+			header: this.props.initialHeader,
+			data: this.props.initialData,
+			sortby: null, // column index
+			sortOrder: false,
+			edit: null // {row: idx, cell: idx}
+		}
 	},
 	render: function(){
 		return (
@@ -26,23 +47,63 @@ var Excel = React.createClass({
 				<thead>
 					<tr>
 						{
-							this.props.header.map((title, idx) => {
-								return <th key={idx}>{title}</th>;
+							this.state.header.map((title, idx) => {
+								if(this.state.sortby === idx){
+									return <th key={idx} onClick={this._sort}>{title} {this.state.sortOrder && '\u21D1' || '\u21D3'}</th>;
+								}
+
+								return <th key={idx} onClick={this._sort}>{title}</th>;
 							})
 						}
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
+					{
+						this.state.data.map((row, rowIdx)=>{
+							console.log(this.state);
+							return <tr key={rowIdx}>
+								{
+									row.map((cell, cellIdx)=>{
+										let content = cell;
+										let edit = this.state.edit;
+
+										if(edit && edit.row === rowIdx && edit.cell === cellIdx){
+											content = <input type="text"/>
+											console.log(content);
+										}
+
+										return <td key={cellIdx} data-row={rowIdx} onDoubleClick={this._editCell}>{content}</td>;
+									})
+								}
+							</tr>
+						})
+					}
 				</tbody>
 			</table>
 		)
+	},
+	_sort: function(e){
+		var idx = e.target.cellIndex;
+		var data = Array.from(this.state.data);
+		var sortOrder = this.state.sortby === idx && !this.state.sortOrder;
+		// console.log(sortOrder);
+		data.sort((a,b)=>{
+			if(!sortOrder) return a[idx] > b[idx] ? 1 : -1;
+			return a[idx] > b[idx] ? -1 : 1;
+		});
+
+		this.setState({
+			data: data,
+			sortby: idx,
+			sortOrder: sortOrder
+		});
+	},
+	_editCell: function(e){
+		let [row, cell] = [parseInt(e.target.dataset.row), e.target.cellIndex];
+		// console.log('editCell', row, cell);
+		this.setState({
+			edit: {row: row, cell: cell}
+		});	
 	}
 });
 
