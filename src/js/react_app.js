@@ -1,8 +1,9 @@
-module.exports = function(){
+'use strict';
+import Excel from './Excel';
 
-	// Show our awesome React component
-	var header = ['one', 'two', 'free', 'four', 'five'];
-	var data = [
+let app = ()=>{
+	let header = ['one', 'two', 'free', 'four', 'five'];
+	let data = [
 		['one1', 'two1', 'free1', 'four1', 'five1'],
 		['one2', 'two2', 'free2', 'four2', 'five2'],
 		['one3', 'two3', 'free3', 'four3', 'five3'],
@@ -13,8 +14,14 @@ module.exports = function(){
 		['one8', 'two8', 'free8', 'four8', 'five8']
 	];
 
+	let props = {
+		initialHeader: header,
+		initialData: data
+	};
+
 	ReactDOM.render(
-		React.createElement(Excel, {initialHeader: header, initialData: data}),
+		<Excel {...props}/>,
+		// React.createElement(Excel, {initialHeader: header, initialData: data}),
 		document.getElementById('app')
 	);
 
@@ -25,90 +32,9 @@ module.exports = function(){
 	// );
 };
 
-// Create new Reaact component
-var Excel = React.createClass({
-	name: 'Excel',
-	propTypes: {
-		initialHeader: React.PropTypes.arrayOf(React.PropTypes.string),
-		initialData: React.PropTypes.arrayOf(React.PropTypes.any)
-	},
-	getInitialState: function(){
-		return {
-			header: this.props.initialHeader,
-			data: this.props.initialData,
-			sortby: null, // column index
-			sortOrder: false,
-			edit: null // {row: idx, cell: idx}
-		}
-	},
-	render: function(){
-		return (
-			<table className="excel">
-				<thead>
-					<tr>
-						{
-							this.state.header.map((title, idx) => {
-								if(this.state.sortby === idx){
-									return <th key={idx} onClick={this._sort}>{title} {this.state.sortOrder && '\u21D1' || '\u21D3'}</th>;
-								}
-
-								return <th key={idx} onClick={this._sort}>{title}</th>;
-							})
-						}
-					</tr>
-				</thead>
-				<tbody>
-					{
-						this.state.data.map((row, rowIdx)=>{
-							console.log(this.state);
-							return <tr key={rowIdx}>
-								{
-									row.map((cell, cellIdx)=>{
-										let content = cell;
-										let edit = this.state.edit;
-
-										if(edit && edit.row === rowIdx && edit.cell === cellIdx){
-											content = <input type="text"/>
-											console.log(content);
-										}
-
-										return <td key={cellIdx} data-row={rowIdx} onDoubleClick={this._editCell}>{content}</td>;
-									})
-								}
-							</tr>
-						})
-					}
-				</tbody>
-			</table>
-		)
-	},
-	_sort: function(e){
-		var idx = e.target.cellIndex;
-		var data = Array.from(this.state.data);
-		var sortOrder = this.state.sortby === idx && !this.state.sortOrder;
-		// console.log(sortOrder);
-		data.sort((a,b)=>{
-			if(!sortOrder) return a[idx] > b[idx] ? 1 : -1;
-			return a[idx] > b[idx] ? -1 : 1;
-		});
-
-		this.setState({
-			data: data,
-			sortby: idx,
-			sortOrder: sortOrder
-		});
-	},
-	_editCell: function(e){
-		let [row, cell] = [parseInt(e.target.dataset.row), e.target.cellIndex];
-		// console.log('editCell', row, cell);
-		this.setState({
-			edit: {row: row, cell: cell}
-		});	
-	}
-});
 
 // Mixin
-var logMixin = {
+let logMixin = {
 	_log: function (methodName, args) {
 		console.log(this.name + '::' + methodName, args);
 	},
@@ -130,7 +56,7 @@ var logMixin = {
 };
 
 // Create new Reaact component
-var Counter = React.createClass({
+let Counter = React.createClass({
 	name: 'Counter',
 	mixins: [logMixin],
 	propTypes: {
@@ -147,8 +73,8 @@ var Counter = React.createClass({
 	}
 });
 
-// Create new Reaact component
-var TextAreaCounter = React.createClass({
+// Create new React component
+let TextAreaCounter = React.createClass({
 	name: 'TextAreaCounter',
 	mixins: [logMixin],
 	// Define property (optional)
@@ -168,7 +94,7 @@ var TextAreaCounter = React.createClass({
 	},
 	render: function(){
 		console.log(this.name + '::' + 'render()');
-		var counter = null;
+		let counter = null;
 		if(this.state.text.length > 0){
 			counter = React.DOM.h3(null,
 				React.createElement(Counter,
@@ -193,3 +119,17 @@ var TextAreaCounter = React.createClass({
 		})
 	}
 });
+
+function download(filename, text) {
+	let element = document.createElement('a');
+
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', filename);
+
+	element.style.display = 'none';
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+};
+
+export default app

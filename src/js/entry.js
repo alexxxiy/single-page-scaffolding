@@ -1,5 +1,7 @@
+import include from './include';
+import app from './react_app'
+
 window.onload = function(){
-	var test = require('./include').test;
-	test();
-	require('./react_app')();
+	include();
+	app();
 };

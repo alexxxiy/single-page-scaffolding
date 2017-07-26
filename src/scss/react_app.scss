@@ -1,22 +1,29 @@
 #app{
 	text-align: center;
 
+	div.button{
+		//text-align: left;
+	}
 	table.excel{
 		display: inline-block;
 		width: 500px;
-		th{
-			background-color: #FAFAFA;
-			width: 80px;
-			text-align: center;
-			cursor: pointer;
-		}
-		th, td{
-			// padding: 5px;
-			border: 1px solid white;
-		}
-		td{
-			input{
-				width: 100%;
+		tr{
+			th{
+				background-color: #FAFAFA;
+				width: 80px;
+				text-align: center;
+				cursor: pointer;
+			}
+			th, td{
+				// padding: 5px;
+				width: 100px;
+				height: 27px;
+				border: 1px solid white;
+			}
+			td{
+				input{
+					width: 98px;
+				}
 			}
 		}
 	}
