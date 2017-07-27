@@ -20,9 +20,11 @@ let app = ()=>{
 	};
 
 	ReactDOM.render(
-		<Excel {...props}/>,
-		// React.createElement(Excel, {initialHeader: header, initialData: data}),
-		document.getElementById('app')
+		<div id="discovery">
+			<h2>Excel Component</h2>
+			<Excel {...props}/>
+		</div>
+		,document.getElementById('app')
 	);
 
 	// Show our awesome React component
@@ -55,9 +57,10 @@ let logMixin = {
 	}
 };
 
-// Create new Reaact component
+// Test React component
 let Counter = React.createClass({
 	name: 'Counter',
+	displayName: 'Counter',
 	mixins: [logMixin],
 	propTypes: {
 		count: React.PropTypes.number.isRequired
@@ -73,7 +76,7 @@ let Counter = React.createClass({
 	}
 });
 
-// Create new React component
+// Another test React component
 let TextAreaCounter = React.createClass({
 	name: 'TextAreaCounter',
 	mixins: [logMixin],

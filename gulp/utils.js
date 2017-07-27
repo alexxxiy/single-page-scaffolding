@@ -4,6 +4,7 @@ const log          = require('./logger')(module);
 var libConf        = require('../lib.conf.json');
 var libTypes       = Object.keys(libConf);
 
+const reURL = new RegExp('^(https?|ftp)\\:\\/\\/[^\\s\\/\\$\\.\\?\\#].[^\\s]*$');
 
 exports.libTypes   = libTypes;
 
@@ -16,21 +17,34 @@ exports.resetCache = function(done){
 
 };
 
-exports.getAllLibrariesFileNames = function(returnFilePath=false){
+/**
+ * Возвращает все полные пути к файлам библиотек из файла lib.conf.json
+ * @param  {Boolean} returnFilePath - true - возвращать полный путь от корня проекта, false - только имя файла
+ * @param  {String} returnFilePath  - где файл будет лежать в директории билда
+ * @return {Array}
+ */
+exports.getAllLibrariesFileNames = function(pathInBuild, returnFilePath=false){
 	var result = libTypes.reduce(function(res, type){
-		return res.concat(exports.getLibrariesFileNamesByType(type, true));
+		return res.concat(exports.getLibrariesFileNamesByType(type, pathInBuild, returnFilePath));
 	}, []);
 
 	return result;
 };
 
-exports.getLibrariesFileNamesByType = function(type, returnFilePath=false){
+/**
+ * Возвращает все файлы библиотек из файла lib.conf.json
+ * @param  {String}  type           - js, css и т.д.
+ * @param  {String} returnFilePath  - где файл будет лежать в директории билда
+ * @param  {Boolean} returnFilePath - true - возвращать полный путь от корня проекта, false - только имя файла
+ * @return {Array}
+ */
+exports.getLibrariesFileNamesByType = function(type, pathInBuild, returnFilePath=false){
 	var libs = libConf[type];
 	var libFiles = [];
 	var file, files, path;
 
 	if(!libs){
-		console.log(`ERROR!!! No libraries with type "${type}"`);
+		log.e(`ERROR!!! No libraries with type "${type}"`);
 		return libFiles;
 	}
 
@@ -42,12 +56,20 @@ exports.getLibrariesFileNamesByType = function(type, returnFilePath=false){
 
 		for(var i = 0; i < files.length; i++){
 			file = files[i];
+
+			if(reURL.test(file)){
+				if(!returnFilePath){
+					libFiles.push(file);
+				}
+				continue;
+			}
+
 			path = `./bower_components/${name}/${file}`;
 
 			try{
 				fs.accessSync(path);
 			}catch(err){
-				console.log(`ERROR!!! File does not exists ${path}`);
+				log.e(`ERROR!!! File does not exists ${path}`);
 				continue;
 			}
 
@@ -59,8 +81,12 @@ exports.getLibrariesFileNamesByType = function(type, returnFilePath=false){
 				file = file.match(re)[0];
 
 				if(!file){
-					console.log(`ERROR!!! Can't parse filename from ${libs[name]}`);
+					log.e(`ERROR!!! Can't parse filename from ${libs[name]}`);
 					continue;
+				}
+
+				if(pathInBuild){
+					file = `${pathInBuild}/${file}`
 				}
 			}
 

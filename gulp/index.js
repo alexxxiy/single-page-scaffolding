@@ -42,7 +42,7 @@ var manifest = {
 
 // Copy libraries
 gulp.task('lib', function(done){
-	var libs = utils.getAllLibrariesFileNames(true);
+	var libs = utils.getAllLibrariesFileNames(commonDirectory, true);
 
 	if(!libs || !libs.length) return done();
 
@@ -66,8 +66,8 @@ gulp.task('pug', function(done){
 		.pipe(pug({
 			pretty: true,
 			locals: {
-				jsLibs: utils.getLibrariesFileNamesByType('js'),
-				cssLibs: utils.getLibrariesFileNamesByType('css'),
+				jsLibs: utils.getLibrariesFileNamesByType('js', commonDirectory),
+				cssLibs: utils.getLibrariesFileNamesByType('css', commonDirectory),
 				manifest: manifest,
 				common: commonDirectory
 			}

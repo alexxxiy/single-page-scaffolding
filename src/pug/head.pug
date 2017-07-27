@@ -2,18 +2,16 @@ title myApp
 meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
 meta(name="description", content="")
 meta(name="keywords", content="")
-link(rel="icon", type="image/x-icon", href="#{common}/favicon.ico")
+link(rel="icon", type="image/x-icon", href=`${common}/favicon.ico`)
 
 // add CSS libraries
 each lib in cssLibs
-	- var link = `<link rel="stylesheet" href="${common}/${lib}">`
-	| !{link}
+	link(rel="stylesheet" href=`${lib}`)
 
 // add JS libraries
 each lib in jsLibs
-	- var script = `<script type="text/javascript" src="${common}/${lib}"></script>`
-	| !{script}
+	script(type="text/javascript" src=`${lib}`)
 
 // add custom JS & CSS files
-|<link rel="stylesheet" href="#{manifest.css}">
-|<script type="text/javascript" src="#{manifest.js}"></script>
+link(rel="stylesheet" href=`${manifest.css}`)
+script(type="text/javascript" src=`${manifest.js}`)
