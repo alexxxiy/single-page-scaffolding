@@ -1,5 +1,8 @@
+const {Component, PropTypes} = React;
+import Button from './Button';
+
 // Create new Reaact component
-class Excel extends React.Component{
+class Excel extends Component{
 	constructor(props){
 		super(props);
 		this.name = 'Excel';
@@ -15,25 +18,31 @@ class Excel extends React.Component{
 	}
 
 	render(){
-		return <div>
-			{this._renderButton()}
-			{this._renderTable()}
-		</div>
-
+		return (
+			<div>
+				{this._renderButton()}
+				{this._renderTable()}
+			</div>
+		)
 	}
 
 	_renderButton(){
 		return(
-			<div className="button">
-				<button onClick={this._searchToggle.bind(this)}>Search</button>
-				<button onClick={this._export.bind(this)}>Export</button>
+			<div className="buttons">
+				<Button onClick={this._searchToggle.bind(this)}>Search</Button>
+				<Button
+						onClick={this._export.bind(this)}
+				        href="_"
+						download="export_file.csv">
+					Export
+				</Button>
 			</div>
 		)
 	}
 
 	_renderTable(){
 		return (
-			<table className="excel">
+			<table className="Excel">
 				{this._renderTableHead()}
 				{this._renderTableBody()}
 			</table>
@@ -163,18 +172,22 @@ class Excel extends React.Component{
 		});
 	}
 
+	_getExportContent(){
+		let content = this.state.data.reduce(function(prev, curr){
+			return prev + curr.join(';') + '\u0085';
+		}, '');
+
+		return content;
+	}
 
 	_export(e){
-		let csv = this.state.data.reduce(function(prev, curr){
-			return prev + curr.join(';') + '\n';
-		}, '');
-		download("file.txt", csv);
+		e.target.href = "data:text/plain;charset=utf-8," + this._getExportContent();
 	}
 };
 
 Excel.propTypes = {
-	initialHeader: React.PropTypes.arrayOf(React.PropTypes.string),
-	initialData: React.PropTypes.arrayOf(React.PropTypes.any)
+	initialHeader: PropTypes.arrayOf(PropTypes.string),
+	initialData: PropTypes.arrayOf(PropTypes.any)
 };
 
 export default Excel
