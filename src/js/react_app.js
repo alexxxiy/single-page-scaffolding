@@ -1,5 +1,6 @@
 'use strict';
 import Excel from './Excel';
+import Suggest from './Suggest';
 
 let app = ()=>{
 	let header = ['one', 'two', 'free', 'four', 'five'];
@@ -23,6 +24,9 @@ let app = ()=>{
 		<div id="discovery">
 			<h2>Excel Component</h2>
 			<Excel {...props}/>
+
+			<h2>Suggest Component</h2>
+			<Suggest />
 		</div>
 		,document.getElementById('app')
 	);
