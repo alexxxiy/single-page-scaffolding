@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 const gulp         = require('gulp');
 const sourcemaps   = require('gulp-sourcemaps');
 const plumber      = require('gulp-plumber');
@@ -20,9 +20,7 @@ const webpack      = require('gulp-webpack');
 const del          = require('del');
 const fs           = require('fs');
 const colors       = require('colors');
-
-const utils     = require('./utils');
-
+const utils        = require('./utils');
 
 
 // Some variables
@@ -31,10 +29,10 @@ const commonDirectory = 'common';
 
 
 //------------------------------
-const _build = buildDirectory;
-const _common = `${buildDirectory}/${commonDirectory}`;
-const webpackConf    = require('../webpack.config')(buildDirectory);
-var manifest = {
+const _build      = buildDirectory;
+const _common     = `${buildDirectory}/${commonDirectory}`;
+const webpackConf = require('../webpack.config')(buildDirectory);
+const manifest    = {
 	js: '',
 	css: ''
 };
@@ -42,7 +40,7 @@ var manifest = {
 
 // Copy libraries
 gulp.task('lib', function(done){
-	var libs = utils.getAllLibrariesFileNames(commonDirectory, true);
+	const libs = utils.getAllLibrariesFileNames(commonDirectory, true);
 
 	if(!libs || !libs.length) return done();
 
@@ -79,7 +77,7 @@ gulp.task('pug', function(done){
 
 // CSS (SCSS)
 gulp.task('build:css', function(){
-	var sha = hash.sync({files: ['src/scss/*.scss']}).slice(0,10);
+	const sha = hash.sync({files: ['src/scss/*.scss']}).slice(0,10);
 
 	return gulp.src(['src/scss/entry.scss'])
 		.pipe(plumber())
@@ -105,7 +103,7 @@ gulp.task('css', gulp.series('clean:css', 'build:css', 'pug'));
 
 // JS
 gulp.task('build:js', function(){
-	var sha = hash.sync({files: ['src/js/*.js']}).slice(0,10);
+	const sha = hash.sync({files: ['src/js/*.js']}).slice(0,10);
 
 	return gulp.src(['src/js/entry.js'])
 		.pipe(webpack(webpackConf))

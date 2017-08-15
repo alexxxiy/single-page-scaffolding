@@ -1,14 +1,13 @@
-const fs           = require('fs');
-const colors       = require('colors');
-const log          = require('./logger')(module);
-var libConf        = require('../lib.conf.json');
-var libTypes       = Object.keys(libConf);
+'use strict'
+const fs      = require('fs');
+const colors  = require('colors');
+const log     = require('./logger')(module);
+const libConf = require('../lib.conf.json');
 
-const reURL = new RegExp('^(https?|ftp)\\:\\/\\/[^\\s\\/\\$\\.\\?\\#].[^\\s]*$');
+const libTypes = Object.keys(libConf);
+const reURL    = new RegExp('^(https?|ftp)\\:\\/\\/[^\\s\\/\\$\\.\\?\\#].[^\\s]*$');
 
-exports.libTypes   = libTypes;
-
-exports.resetCache = function(done){
+function resetCache(done){
 	delete require.cache[require.resolve('../lib.conf.json')];
 	libConf = require('../lib.conf.json');
 
@@ -23,9 +22,9 @@ exports.resetCache = function(done){
  * @param  {String} returnFilePath  - где файл будет лежать в директории билда
  * @return {Array}
  */
-exports.getAllLibrariesFileNames = function(pathInBuild, returnFilePath=false){
+function getAllLibrariesFileNames(pathInBuild, returnFilePath=false){
 	var result = libTypes.reduce(function(res, type){
-		return res.concat(exports.getLibrariesFileNamesByType(type, pathInBuild, returnFilePath));
+		return res.concat(getLibrariesFileNamesByType(type, pathInBuild, returnFilePath));
 	}, []);
 
 	return result;
@@ -38,7 +37,7 @@ exports.getAllLibrariesFileNames = function(pathInBuild, returnFilePath=false){
  * @param  {Boolean} returnFilePath - true - возвращать полный путь от корня проекта, false - только имя файла
  * @return {Array}
  */
-exports.getLibrariesFileNamesByType = function(type, pathInBuild, returnFilePath=false){
+function getLibrariesFileNamesByType(type, pathInBuild, returnFilePath=false){
 	var libs = libConf[type];
 	var libFiles = [];
 	var file, files, path;
@@ -97,7 +96,7 @@ exports.getLibrariesFileNamesByType = function(type, pathInBuild, returnFilePath
 	return libFiles;
 };
 
-exports.getCustomFile = function(type){
+function getCustomFile(type){
 	var reMap = {
 		js: '^script\\.\\S+\\.js$',
 		css: '^style\\.\\S+\\.css$'
@@ -123,3 +122,12 @@ exports.getCustomFile = function(type){
 	log.e(`There no custom ${type} file in the build directory`)
 	return null;
 };
+
+
+module.exports = {
+	libTypes,
+	resetCache,
+	getAllLibrariesFileNames,
+	getLibrariesFileNamesByType,
+	getCustomFile
+}

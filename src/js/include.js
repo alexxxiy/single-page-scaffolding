@@ -1,3 +1,4 @@
+
 export function include1(){
 	console.log('Hello from include.js 1');
 };

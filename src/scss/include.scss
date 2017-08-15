@@ -11,4 +11,15 @@
 body{
 	background-color: #3aabd1;
 	font-family: qarmic;
+
+	h1{
+		text-align: center;
+	}
+
+	div#app{
+		text-align: center;
+		img{
+			width: 300px;
+		}
+	}
 }
