@@ -7,11 +7,11 @@ const sass         = require('gulp-sass');
 // const browserSync  = require('browser-sync').create();
 // const reload       = browserSync.reload;
 const debug        = require('gulp-debug');
-// const gulpIf       = require('gulp-if');
+const gulpIf       = require('gulp-if');
 const rename       = require('gulp-rename');
 // const PATH         = require('path');
 // const svgmin       = require('gulp-svgmin');
-// const uglify       = require('gulp-uglify');
+const uglify       = require('gulp-uglify');
 const hash         = require('hash-files');
 // const ghash        = require('gulp-hash');
 const cleanCSS     = require('gulp-clean-css');
@@ -107,6 +107,10 @@ gulp.task('build:js', function(){
 
 	return gulp.src(['src/js/entry.js'])
 		.pipe(webpack(webpackConf))
+		.pipe(gulpIf((path)=>{
+			// exclude *.js.map files
+			return path.extname === '.js';
+		}, uglify()))
 		.pipe(rename((path)=>{
 			path.basename = path.basename.replace('script', 'script.' + sha);
 
