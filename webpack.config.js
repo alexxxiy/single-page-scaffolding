@@ -1,16 +1,16 @@
 'use strict';
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const NODE_ENV = process.env.NODE_ENV || 'DEVELOPMENT';
 const webpack = require('webpack');
 
 let config = {
 	entry: ['babel-polyfill', './src/js/entry'],
 
 	output: {
-		filename: './build/script.js'
+		filename: './build/script.js' // will be redefined below
 	},
 
-	devtool: 'cheap-source-map',
+	devtool: NODE_ENV === 'DEVELOPMENT' && 'source-map', // will be redefined below
     module: {
 	    loaders: [
 		    {
@@ -25,8 +25,9 @@ let config = {
 	}
 };
 
-module.exports = (buildDirectory) => {
+module.exports = (buildDirectory, node_env = NODE_ENV) => {
 	config.output.filename = `./${buildDirectory}/script.js`;
+	config.devtool = (node_env === 'DEVELOPMENT') && 'source-map';
 
 	return config;
 }

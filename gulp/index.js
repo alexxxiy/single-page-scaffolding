@@ -12,6 +12,7 @@ const rename       = require('gulp-rename');
 // const PATH         = require('path');
 // const svgmin       = require('gulp-svgmin');
 const uglify       = require('gulp-uglify');
+const htmlmin      = require('gulp-htmlmin');
 const hash         = require('hash-files');
 // const ghash        = require('gulp-hash');
 const cleanCSS     = require('gulp-clean-css');
@@ -23,7 +24,10 @@ const colors       = require('colors');
 const utils        = require('./utils');
 
 
-// Some variables
+// Some constants
+const NODE_ENV = process.env.NODE_ENV || 'DEVELOPMENT';
+const PROD = (NODE_ENV.toUpperCase() === 'PRODUCTION');
+const DEV = !PROD;
 const buildDirectory = 'build';
 const commonDirectory = 'common';
 
@@ -31,7 +35,7 @@ const commonDirectory = 'common';
 //------------------------------
 const _build      = buildDirectory;
 const _common     = `${buildDirectory}/${commonDirectory}`;
-const webpackConf = require('../webpack.config')(buildDirectory);
+const webpackConf = require('../webpack.config')(buildDirectory, NODE_ENV);
 const manifest    = {
 	js: '',
 	css: ''
@@ -72,6 +76,7 @@ gulp.task('pug', function(done){
 		}))
 		.pipe(debug({title: 'pug'}))
 		.pipe(rename('index.html'))
+		.pipe(gulpIf(PROD, htmlmin({collapseWhitespace: true})))
 		.pipe(gulp.dest(_build));
 });
 
@@ -107,10 +112,7 @@ gulp.task('build:js', function(){
 
 	return gulp.src(['src/js/entry.js'])
 		.pipe(webpack(webpackConf))
-		.pipe(gulpIf((path)=>{
-			// exclude *.js.map files
-			return path.extname === '.js';
-		}, uglify()))
+		.pipe(gulpIf(path => PROD && path.extname === '.js' /* exclude *.js.map files */, uglify()))
 		.pipe(rename((path)=>{
 			path.basename = path.basename.replace('script', 'script.' + sha);
 
