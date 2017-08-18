@@ -2,10 +2,11 @@
 const fs      = require('fs');
 const colors  = require('colors');
 const log     = require('./logger')(module);
-const libConf = require('../lib.conf.json');
 
-const libTypes = Object.keys(libConf);
-const reURL    = new RegExp('^(https?|ftp)\\:\\/\\/[^\\s\\/\\$\\.\\?\\#].[^\\s]*$');
+
+const reURL  = new RegExp('^(https?|ftp)\\:\\/\\/[^\\s\\/\\$\\.\\?\\#].[^\\s]*$');
+var libConf  = require('../lib.conf.json');
+var libTypes = Object.keys(libConf);
 
 function resetCache(done){
 	delete require.cache[require.resolve('../lib.conf.json')];
