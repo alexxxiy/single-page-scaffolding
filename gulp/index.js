@@ -9,6 +9,8 @@ const sass         = require('gulp-sass');
 const debug        = require('gulp-debug');
 const gulpIf       = require('gulp-if');
 const rename       = require('gulp-rename');
+const replace      = require('gulp-replace');
+const touch        = require('gulp-touch')
 // const PATH         = require('path');
 // const svgmin       = require('gulp-svgmin');
 const uglify       = require('gulp-uglify');
@@ -77,7 +79,13 @@ gulp.task('pug', function(done){
 		.pipe(debug({title: 'pug'}))
 		.pipe(rename('index.html'))
 		.pipe(gulpIf(PROD, htmlmin({collapseWhitespace: true})))
-		.pipe(gulp.dest(_build));
+		.pipe(gulp.dest(_build))
+		.pipe(touch());
+});
+
+gulp.task('clean:html', (done)=>{
+	del.sync([`${_build}/index.html`]);
+	return done();
 });
 
 // CSS (SCSS)
@@ -121,6 +129,7 @@ gulp.task('build:js', function(){
 			}
 
 		}))
+		.pipe(replace('script.js.map', `script.${sha}.js.map`))
 		.pipe(debug({title: 'JS'}))
 		.pipe(gulp.dest('.'));
 });
