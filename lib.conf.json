@@ -4,6 +4,7 @@
 		"modernizr": "https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
 	},
 	"css": {
-		"bootstrap": "dist/css/bootstrap.min.css"
+		"bootstrap": "dist/css/bootstrap.min.css",
+		"font_waiting_for_the_sunrise": "https://fonts.googleapis.com/css?family=Waiting for the Sunrise"
 	}
 }

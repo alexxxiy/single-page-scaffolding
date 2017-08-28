@@ -4,7 +4,7 @@ const colors  = require('colors');
 const log     = require('./logger')(module);
 
 
-const reURL  = new RegExp('^(https?|ftp)\\:\\/\\/[^\\s\\/\\$\\.\\?\\#].[^\\s]*$');
+const reURL  = new RegExp('^(https?|ftp)\\:\\/\\/[^\\s\\/\\$\\.\\?\\#].*$');
 var libConf  = require('../lib.conf.json');
 var libTypes = Object.keys(libConf);
 
@@ -44,7 +44,7 @@ function getLibrariesFileNamesByType(type, pathInBuild, returnFilePath=false){
 	var file, files, path;
 
 	if(!libs){
-		log.e(`ERROR!!! No libraries with type "${type}"`);
+		log.e(`ERROR_01 No libraries with type "${type}"`);
 		return libFiles;
 	}
 
@@ -69,7 +69,7 @@ function getLibrariesFileNamesByType(type, pathInBuild, returnFilePath=false){
 			try{
 				fs.accessSync(path);
 			}catch(err){
-				log.e(`ERROR!!! File does not exists ${path}`);
+				log.e(`ERROR_02 File does not exists ${path}`);
 				continue;
 			}
 
@@ -81,7 +81,7 @@ function getLibrariesFileNamesByType(type, pathInBuild, returnFilePath=false){
 				file = file.match(re)[0];
 
 				if(!file){
-					log.e(`ERROR!!! Can't parse filename from ${libs[name]}`);
+					log.e(`ERROR_03 Can't parse filename from ${libs[name]}`);
 					continue;
 				}
 

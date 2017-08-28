@@ -10,7 +10,7 @@ const debug        = require('gulp-debug');
 const gulpIf       = require('gulp-if');
 const rename       = require('gulp-rename');
 const replace      = require('gulp-replace');
-const touch        = require('gulp-touch')
+const touch        = require('gulp-touch');
 // const PATH         = require('path');
 // const svgmin       = require('gulp-svgmin');
 const uglify       = require('gulp-uglify');
@@ -85,6 +85,13 @@ gulp.task('pug', function(done){
 
 gulp.task('clean:html', (done)=>{
 	del.sync([`${_build}/index.html`]);
+
+	return done();
+});
+
+gulp.task('clean:html', (done)=>{
+	del.sync([`${_build}/index.html`]);
+
 	return done();
 });
 
@@ -112,7 +119,7 @@ gulp.task('clean:css', ()=>{
 	return del([`${_build}/style.*.css`]);
 });
 
-gulp.task('css', gulp.series('clean:css', 'build:css', 'pug'));
+gulp.task('css', gulp.series('clean:html', 'clean:css', 'build:css', 'pug'));
 
 // JS
 gulp.task('build:js', function(){
@@ -127,7 +134,6 @@ gulp.task('build:js', function(){
 			if(path.extname === '.js'){
 				manifest.js = path.basename + path.extname;
 			}
-
 		}))
 		.pipe(replace('script.js.map', `script.${sha}.js.map`))
 		.pipe(debug({title: 'JS'}))
@@ -143,7 +149,7 @@ gulp.task('clean:js', ()=>{
 	return del([`${_build}/script.*.js`, `${_build}/script.*.js.map`]);
 });
 
-gulp.task('js', gulp.series('clean:js', 'build:js', 'pug'));
+gulp.task('js', gulp.series('clean:html', 'clean:js', 'build:js', 'pug'));
 
 // Different common files
 gulp.task('common', ()=>{
@@ -160,12 +166,12 @@ gulp.task('clean', ()=>{
 gulp.task('watch', function(){
 	gulp.watch(['src/pug/**/*.pug'], gulp.series('pug'));
 	gulp.watch(['src/scss/**/*.scss'], gulp.series('css'));
-	gulp.watch(['src/js/**/*.js'], gulp.series(['js']));
+	gulp.watch(['src/js/**/*.js'], gulp.series('js'));
 	gulp.watch(['src/common/**/*.*'], gulp.series(['common']));
 	gulp.watch(['lib.conf.json'], gulp.series(utils.resetCache, 'pug', 'lib'));
 });
 
 // Default
-gulp.task('default', gulp.series('clean', 'css', 'js', 'images', 'lib', 'common','pug', 'watch'));
+gulp.task('default', gulp.series('clean', 'build:css', 'build:js', 'images', 'lib', 'common','pug', 'watch'));
 
-
+gulp.task('build', gulp.series('clean', 'build:css', 'build:js', 'images', 'lib', 'common','pug'));
